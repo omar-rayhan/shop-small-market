@@ -93,20 +93,38 @@ export const mockProducts = [
   }
 ];
 
-// Generate additional products to reach 1000
+// Generate additional products to reach 1,000,000
 const additionalProducts = [];
 const baseProducts = [...mockProducts];
+const productVariants = [
+  "Pro", "Elite", "Premium", "Standard", "Deluxe", "Basic", "Advanced", "Ultra",
+  "Mini", "Max", "XL", "Compact", "Extended", "Limited Edition", "Special",
+  "Classic", "Modern", "Vintage", "New", "Improved", "Enhanced", "Professional"
+];
 
-for (let i = 9; i <= 1000; i++) {
+const categories = ["Electronics", "Clothing", "Home & Garden", "Sports", "Beauty", "Books", "Kitchen", "Automotive"];
+
+for (let i = 9; i <= 1000000; i++) {
   const baseProduct = baseProducts[(i - 9) % baseProducts.length];
+  const variant = productVariants[Math.floor(Math.random() * productVariants.length)];
+  const category = categories[Math.floor(Math.random() * categories.length)];
+  
+  // Generate price variation
+  const priceMultiplier = 0.5 + Math.random() * 2; // 0.5x to 2.5x price variation
+  const newPrice = Number((baseProduct.price * priceMultiplier).toFixed(2));
+  const hasDiscount = Math.random() > 0.7; // 30% chance of discount
+  const originalPrice = hasDiscount ? Number((newPrice * (1.2 + Math.random() * 0.5)).toFixed(2)) : undefined;
+  
   additionalProducts.push({
     ...baseProduct,
     id: i,
-    name: `${baseProduct.name} - Model ${i}`,
-    price: Number((baseProduct.price + (Math.random() * 50 - 25)).toFixed(2)),
-    reviews: Math.floor(Math.random() * 2000) + 100,
+    name: `${baseProduct.name} ${variant} - Model ${i}`,
+    price: newPrice,
+    originalPrice: originalPrice,
+    reviews: Math.floor(Math.random() * 5000) + 50,
     rating: Number((Math.random() * 2 + 3).toFixed(1)), // 3.0 to 5.0
-    inStock: Math.random() > 0.1 // 90% in stock
+    category: category,
+    inStock: Math.random() > 0.05 // 95% in stock
   });
 }
 
