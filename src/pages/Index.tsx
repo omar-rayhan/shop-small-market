@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import ProductCard from '@/components/ProductCard';
 import CartSidebar from '@/components/CartSidebar';
 import { mockProducts } from '@/data/mockProducts';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,8 +16,9 @@ const Index = () => {
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [featuredProducts] = useState(mockProducts.slice(0, 8));
+  const { toast } = useToast();
 
-  const categories = ['All', 'Electronics', 'Clothing', 'Home & Garden', 'Sports', 'Beauty', 'Books'];
+  const categories = ['All', 'Electronics', 'Clothing', 'Home & Garden', 'Sports', 'Beauty', 'Books', 'Kitchen', 'Automotive'];
 
   const filteredProducts = mockProducts.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,6 +43,10 @@ const Index = () => {
 
   const removeFromCart = (productId) => {
     setCartItems(prev => prev.filter(item => item.id !== productId));
+    toast({
+      title: "Item Removed",
+      description: "Item has been removed from your cart.",
+    });
   };
 
   const updateQuantity = (productId, quantity) => {
@@ -57,14 +63,25 @@ const Index = () => {
 
   const getTotalItems = () => cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
+  const clearCart = () => {
+    setCartItems([]);
+    toast({
+      title: "Cart Cleared",
+      description: "All items have been removed from your cart.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white shadow-sm border-b sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
               <h1 className="text-2xl font-bold text-gray-900">ShopHub</h1>
+              <Badge variant="outline" className="text-xs">
+                {mockProducts.length.toLocaleString()} products
+              </Badge>
             </div>
             
             <div className="flex-1 max-w-2xl mx-8">
@@ -84,6 +101,16 @@ const Index = () => {
               <Button variant="ghost" size="icon">
                 <Heart className="h-5 w-5" />
               </Button>
+              {cartItems.length > 0 && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={clearCart}
+                  className="text-xs"
+                >
+                  Clear Cart
+                </Button>
+              )}
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -106,7 +133,7 @@ const Index = () => {
       <section className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-5xl font-bold mb-4">Discover Amazing Products</h2>
-          <p className="text-xl mb-8 opacity-90">Shop from thousands of quality products at unbeatable prices</p>
+          <p className="text-xl mb-8 opacity-90">Shop from over 1 million quality products at unbeatable prices</p>
           <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
             Shop Now
           </Button>
@@ -135,6 +162,9 @@ const Index = () => {
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-3xl font-bold text-gray-900">All Products</h3>
             <div className="flex items-center space-x-4">
+              <Badge variant="outline">
+                {filteredProducts.length.toLocaleString()} results
+              </Badge>
               <Button variant="outline" size="icon">
                 <Filter className="h-4 w-4" />
               </Button>
@@ -157,7 +187,7 @@ const Index = () => {
 
           {/* Products Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
+            {filteredProducts.slice(0, 20).map((product) => (
               <ProductCard 
                 key={product.id} 
                 product={product} 
@@ -169,6 +199,14 @@ const Index = () => {
           {filteredProducts.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
+            </div>
+          )}
+
+          {filteredProducts.length > 20 && (
+            <div className="text-center mt-8">
+              <Button variant="outline">
+                Load More Products
+              </Button>
             </div>
           )}
         </div>

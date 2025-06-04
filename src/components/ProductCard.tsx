@@ -4,6 +4,7 @@ import { Heart, ShoppingCart, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 interface Product {
   id: number;
@@ -26,10 +27,29 @@ interface ProductCardProps {
 const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   const [isLiked, setIsLiked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { toast } = useToast();
 
   const discountPercentage = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAddToCart(product);
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
+
+  const handleLikeToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsLiked(!isLiked);
+    toast({
+      title: isLiked ? "Removed from Wishlist" : "Added to Wishlist",
+      description: `${product.name} ${isLiked ? 'removed from' : 'added to'} your wishlist.`,
+    });
+  };
 
   return (
     <Card className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-0 shadow-md">
@@ -58,10 +78,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
             className={`absolute top-2 right-2 h-8 w-8 rounded-full bg-white/80 hover:bg-white transition-colors ${
               isLiked ? 'text-red-500' : 'text-gray-600'
             }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsLiked(!isLiked);
-            }}
+            onClick={handleLikeToggle}
           >
             <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
           </Button>
@@ -120,10 +137,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
             
             <Button
               size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddToCart(product);
-              }}
+              onClick={handleAddToCart}
               disabled={!product.inStock}
               className="min-w-[100px]"
             >

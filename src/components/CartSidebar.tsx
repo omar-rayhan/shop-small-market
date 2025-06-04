@@ -3,6 +3,7 @@ import { X, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
 
 interface CartItem {
   id: number;
@@ -21,8 +22,28 @@ interface CartSidebarProps {
 }
 
 const CartSidebar = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem }: CartSidebarProps) => {
+  const { toast } = useToast();
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const handleCheckout = () => {
+    // Simulate checkout process
+    toast({
+      title: "Checkout Initiated",
+      description: `Processing ${totalItems} items worth $${total.toFixed(2)}`,
+    });
+    
+    // Simulate a delay for processing
+    setTimeout(() => {
+      toast({
+        title: "Order Placed Successfully!",
+        description: "Your order has been confirmed and will be shipped soon.",
+      });
+      // Clear cart after successful checkout
+      cartItems.forEach(item => onRemoveItem(item.id));
+      onClose();
+    }, 2000);
+  };
 
   if (!isOpen) return null;
 
@@ -109,14 +130,32 @@ const CartSidebar = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveIte
           {cartItems.length > 0 && (
             <div className="border-t p-6">
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold">Total:</span>
-                  <span className="text-lg font-bold">${total.toFixed(2)}</span>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Subtotal:</span>
+                    <span>${total.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Shipping:</span>
+                    <span>Free</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Tax:</span>
+                    <span>${(total * 0.08).toFixed(2)}</span>
+                  </div>
                 </div>
                 <Separator />
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-semibold">Total:</span>
+                  <span className="text-lg font-bold">${(total * 1.08).toFixed(2)}</span>
+                </div>
                 <div className="space-y-2">
-                  <Button className="w-full" size="lg">
-                    Checkout
+                  <Button 
+                    className="w-full" 
+                    size="lg"
+                    onClick={handleCheckout}
+                  >
+                    Proceed to Checkout
                   </Button>
                   <Button variant="outline" className="w-full" onClick={onClose}>
                     Continue Shopping
