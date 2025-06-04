@@ -1,224 +1,217 @@
 
-import { useState } from 'react';
-import { Search, ShoppingCart, Filter, Heart, Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { useState, useMemo } from 'react';
 import ProductCard from '@/components/ProductCard';
 import CartSidebar from '@/components/CartSidebar';
-import { mockProducts } from '@/data/mockProducts';
-import { useToast } from '@/hooks/use-toast';
+import Header from '@/components/Header';
+import { enhancedProducts } from '@/data/enhancedProducts';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  image: string;
+  rating: number;
+  reviews: number;
+  category: string;
+  description: string;
+  inStock: boolean;
+}
+
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
+
+const PRODUCTS_PER_PAGE = 24;
 
 const Index = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [featuredProducts] = useState(mockProducts.slice(0, 8));
-  const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  const categories = ['All', 'Electronics', 'Clothing', 'Home & Garden', 'Sports', 'Beauty', 'Books', 'Kitchen', 'Automotive'];
+  // Get unique categories
+  const categories = ['All', ...Array.from(new Set(enhancedProducts.map(p => p.category)))];
 
-  const filteredProducts = mockProducts.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Filter products based on search and category
+  const filteredProducts = useMemo(() => {
+    return enhancedProducts.filter(product => {
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          product.category.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [searchQuery, selectedCategory]);
 
-  const addToCart = (product) => {
-    setCartItems(prev => {
-      const existing = prev.find(item => item.id === product.id);
-      if (existing) {
-        return prev.map(item => 
-          item.id === product.id 
+  // Pagination
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+
+  // Reset page when filters change
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory]);
+
+  const addToCart = (product: Product) => {
+    setCartItems(prevItems => {
+      const existingItem = prevItems.find(item => item.id === product.id);
+      if (existingItem) {
+        return prevItems.map(item =>
+          item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prevItems, {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity: 1
+      }];
     });
   };
 
-  const removeFromCart = (productId) => {
-    setCartItems(prev => prev.filter(item => item.id !== productId));
-    toast({
-      title: "Item Removed",
-      description: "Item has been removed from your cart.",
-    });
-  };
-
-  const updateQuantity = (productId, quantity) => {
-    if (quantity === 0) {
-      removeFromCart(productId);
+  const updateQuantity = (productId: number, quantity: number) => {
+    if (quantity <= 0) {
+      removeItem(productId);
       return;
     }
-    setCartItems(prev => 
-      prev.map(item => 
+    setCartItems(prevItems =>
+      prevItems.map(item =>
         item.id === productId ? { ...item, quantity } : item
       )
     );
   };
 
-  const getTotalItems = () => cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const removeItem = (productId: number) => {
+    setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
+  };
 
-  const clearCart = () => {
-    setCartItems([]);
-    toast({
-      title: "Cart Cleared",
-      description: "All items have been removed from your cart.",
-    });
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">ShopHub</h1>
-              <Badge variant="outline" className="text-xs">
-                {mockProducts.length.toLocaleString()} products
-              </Badge>
-            </div>
-            
-            <div className="flex-1 max-w-2xl mx-8">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full"
-                />
-              </div>
-            </div>
+    <div className="min-h-screen bg-background">
+      <Header
+        onCartClick={() => setIsCartOpen(true)}
+        cartItems={cartItems}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
 
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="icon">
-                <Heart className="h-5 w-5" />
-              </Button>
-              {cartItems.length > 0 && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={clearCart}
-                  className="text-xs"
-                >
-                  Clear Cart
-                </Button>
-              )}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => setIsCartOpen(true)}
-                className="relative"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {getTotalItems() > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                    {getTotalItems()}
-                  </Badge>
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-5xl font-bold mb-4">Discover Amazing Products</h2>
-          <p className="text-xl mb-8 opacity-90">Shop from over 1 million quality products at unbeatable prices</p>
-          <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-            Shop Now
-          </Button>
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-gray-900 mb-8">Featured Products</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard 
-                key={product.id} 
-                product={product} 
-                onAddToCart={addToCart}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Main Products Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-3xl font-bold text-gray-900">All Products</h3>
-            <div className="flex items-center space-x-4">
-              <Badge variant="outline">
-                {filteredProducts.length.toLocaleString()} results
-              </Badge>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Category Filter */}
-          <div className="flex flex-wrap gap-2 mb-8">
-            {categories.map((category) => (
+      <main className="container mx-auto px-4 py-8">
+        {/* Category Filter */}
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold mb-4">Categories</h2>
+          <div className="flex flex-wrap gap-2">
+            {categories.map(category => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
+                size="sm"
                 onClick={() => setSelectedCategory(category)}
-                className="rounded-full"
               >
                 {category}
               </Button>
             ))}
           </div>
-
-          {/* Products Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.slice(0, 20).map((product) => (
-              <ProductCard 
-                key={product.id} 
-                product={product} 
-                onAddToCart={addToCart}
-              />
-            ))}
-          </div>
-
-          {filteredProducts.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
-            </div>
-          )}
-
-          {filteredProducts.length > 20 && (
-            <div className="text-center mt-8">
-              <Button variant="outline">
-                Load More Products
-              </Button>
-            </div>
-          )}
         </div>
-      </section>
 
-      {/* Cart Sidebar */}
+        {/* Results Info */}
+        <div className="mb-6">
+          <p className="text-muted-foreground">
+            Showing {startIndex + 1}-{Math.min(startIndex + PRODUCTS_PER_PAGE, filteredProducts.length)} of {filteredProducts.length} products
+            {searchQuery && ` for "${searchQuery}"`}
+            {selectedCategory !== 'All' && ` in ${selectedCategory}`}
+          </p>
+        </div>
+
+        {/* Products Grid */}
+        {paginatedProducts.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-8">
+              {paginatedProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={addToCart}
+                />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={currentPage === pageNum ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handlePageChange(pageNum)}
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                })}
+                
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-xl text-muted-foreground mb-4">No products found</p>
+            <p className="text-muted-foreground">Try adjusting your search or category filter</p>
+          </div>
+        )}
+      </main>
+
       <CartSidebar
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cartItems={cartItems}
         onUpdateQuantity={updateQuantity}
-        onRemoveItem={removeFromCart}
+        onRemoveItem={removeItem}
       />
     </div>
   );
