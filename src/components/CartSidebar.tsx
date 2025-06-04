@@ -126,38 +126,51 @@ const CartSidebar = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveIte
             )}
           </div>
 
-          {/* Footer */}
+          {/* Professional Checkout Footer */}
           {cartItems.length > 0 && (
-            <div className="border-t p-6">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Subtotal:</span>
-                    <span>${total.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Shipping:</span>
-                    <span>Free</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Tax:</span>
-                    <span>${(total * 0.08).toFixed(2)}</span>
+            <div className="border-t bg-gray-50/50 p-6">
+              <div className="space-y-6">
+                {/* Order Summary */}
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-gray-900 mb-3">Order Summary</h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-gray-700">
+                      <span className="text-sm font-medium">Subtotal ({totalItems} items):</span>
+                      <span className="text-sm font-semibold text-gray-900">${total.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-700">
+                      <span className="text-sm font-medium">Shipping:</span>
+                      <span className="text-sm font-medium text-green-600">Free</span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-700">
+                      <span className="text-sm font-medium">Tax (8%):</span>
+                      <span className="text-sm font-semibold text-gray-900">${(total * 0.08).toFixed(2)}</span>
+                    </div>
                   </div>
                 </div>
-                <Separator />
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold">Total:</span>
-                  <span className="text-lg font-bold">${(total * 1.08).toFixed(2)}</span>
+                
+                <Separator className="my-4" />
+                
+                {/* Total */}
+                <div className="flex justify-between items-center py-2 bg-white rounded-lg px-4 border">
+                  <span className="text-lg font-bold text-gray-900">Total:</span>
+                  <span className="text-xl font-bold text-gray-900">${(total * 1.08).toFixed(2)}</span>
                 </div>
-                <div className="space-y-2">
+
+                {/* Action Buttons */}
+                <div className="space-y-3 pt-2">
                   <Button 
-                    className="w-full" 
+                    className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-3 text-base" 
                     size="lg"
                     onClick={handleCheckout}
                   >
                     Proceed to Checkout
                   </Button>
-                  <Button variant="outline" className="w-full" onClick={onClose}>
+                  <Button 
+                    variant="outline" 
+                    className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2" 
+                    onClick={onClose}
+                  >
                     Continue Shopping
                   </Button>
                 </div>
