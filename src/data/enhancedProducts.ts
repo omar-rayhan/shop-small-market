@@ -15,21 +15,15 @@ export const productAdjectives = [
 ];
 
 export const productNames = [
-  "Headphones", "T-Shirt", "Watch", "Backpack", "Shoes", "Laptop", "Phone", 
-  "Camera", "Sunglasses", "Wallet", "Jacket", "Pants", "Bag", "Bottle", 
-  "Book", "Notebook", "Pen", "Mouse", "Keyboard", "Monitor", "Tablet", 
-  "Speaker", "Charger", "Case", "Stand", "Lamp", "Chair", "Desk", "Pillow",
-  "Blanket", "Towel", "Cup", "Plate", "Bowl", "Knife", "Fork", "Spoon",
-  "Pan", "Pot", "Blender", "Mixer", "Toaster", "Microwave", "Refrigerator",
-  "Vacuum", "Iron", "Dryer", "Washer", "Sofa", "Table", "Mirror", "Clock",
-  "Frame", "Vase", "Candle", "Plant", "Tool", "Drill", "Hammer", "Screwdriver",
-  "Saw", "Wrench", "Pliers", "Ladder", "Paint", "Brush", "Roller", "Bucket",
-  "Hose", "Sprinkler", "Mower", "Trimmer", "Shovel", "Rake", "Gloves", "Hat",
-  "Scarf", "Belt", "Tie", "Dress", "Skirt", "Shirt", "Sweater", "Coat",
-  "Boots", "Sandals", "Sneakers", "Slippers", "Socks", "Underwear", "Bra",
-  "Swimwear", "Pajamas", "Robe", "Jewelry", "Ring", "Necklace", "Bracelet",
-  "Earrings", "Watch", "Perfume", "Cologne", "Shampoo", "Conditioner", "Soap",
-  "Lotion", "Cream", "Serum", "Mascara", "Lipstick", "Foundation", "Powder"
+  "Wireless Headphones", "Bluetooth Speaker", "Smartphone", "Laptop", "Tablet", "Smartwatch", "Camera", "Gaming Mouse", "Mechanical Keyboard", "Monitor",
+  "Cotton T-Shirt", "Denim Jeans", "Hoodie", "Sneakers", "Dress", "Jacket", "Pants", "Skirt", "Blouse", "Boots",
+  "Coffee Maker", "Blender", "Toaster", "Air Fryer", "Microwave", "Rice Cooker", "Stand Mixer", "Food Processor", "Slow Cooker", "Espresso Machine",
+  "Yoga Mat", "Dumbbells", "Resistance Bands", "Water Bottle", "Running Shoes", "Fitness Tracker", "Protein Shaker", "Exercise Ball", "Jump Rope", "Foam Roller",
+  "Face Serum", "Moisturizer", "Sunscreen", "Lipstick", "Foundation", "Mascara", "Shampoo", "Hair Dryer", "Perfume", "Nail Polish",
+  "Office Chair", "Desk Lamp", "Notebook", "Pen Set", "Calculator", "Stapler", "File Organizer", "Whiteboard", "Computer Stand", "Printer",
+  "Dog Food", "Cat Toy", "Pet Bed", "Leash", "Collar", "Litter Box", "Pet Carrier", "Dog Treats", "Bird Cage", "Fish Tank",
+  "Backpack", "Suitcase", "Handbag", "Wallet", "Sunglasses", "Hat", "Scarf", "Belt", "Watch", "Jewelry Box",
+  "Board Game", "Puzzle", "Action Figure", "Doll", "Building Blocks", "Remote Control Car", "Stuffed Animal", "Art Supplies", "Musical Instrument", "Educational Toy"
 ];
 
 export const brands = [
@@ -40,23 +34,58 @@ export const brands = [
   "PetPerfect", "BabyBest", "OfficeOptimal", "ArtisticSoul", "CraftyCrafter"
 ];
 
-const imageUrls = [
-  "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1506629905877-c19d82d2d5c0?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1503602642458-232111445657?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=500&fit=crop",
-  "https://images.unsplash.com/photo-1572635196243-4dd75fbdbd7f?w=500&h=500&fit=crop"
-];
+// More diverse and category-specific image URLs
+const categoryImages = {
+  "Electronics": [
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop", // headphones
+    "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=500&h=500&fit=crop", // smartphone
+    "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&h=500&fit=crop", // laptop
+    "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500&h=500&fit=crop", // smartwatch
+    "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=500&h=500&fit=crop", // camera
+    "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500&h=500&fit=crop", // speaker
+    "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&h=500&fit=crop", // tablet
+  ],
+  "Clothing & Fashion": [
+    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=500&fit=crop", // t-shirt
+    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop", // shoes
+    "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=500&h=500&fit=crop", // jeans
+    "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500&h=500&fit=crop", // dress
+    "https://images.unsplash.com/photo-1506629905877-c19d82d2d5c0?w=500&h=500&fit=crop", // jacket
+    "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500&h=500&fit=crop", // hoodie
+  ],
+  "Kitchen & Dining": [
+    "https://images.unsplash.com/photo-1556909078-f8c21cd4bf90?w=500&h=500&fit=crop", // coffee maker
+    "https://images.unsplash.com/photo-1585515656671-62d5cf5e015a?w=500&h=500&fit=crop", // blender
+    "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500&h=500&fit=crop", // kitchen appliance
+    "https://images.unsplash.com/photo-1556909078-f8c21cd4bf90?w=500&h=500&fit=crop", // toaster
+  ],
+  "Sports & Outdoors": [
+    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=500&fit=crop", // yoga mat
+    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=500&fit=crop", // fitness equipment
+    "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&h=500&fit=crop", // water bottle
+    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=500&fit=crop", // running shoes
+  ],
+  "Beauty & Personal Care": [
+    "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=500&h=500&fit=crop", // beauty products
+    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&h=500&fit=crop", // skincare
+    "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=500&h=500&fit=crop", // cosmetics
+  ],
+  "Home & Garden": [
+    "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500&h=500&fit=crop", // plant pot
+    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&h=500&fit=crop", // home decor
+    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&h=500&fit=crop", // furniture
+  ],
+  "Office Supplies": [
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop", // notebook
+    "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=500&h=500&fit=crop", // office supplies
+    "https://images.unsplash.com/photo-1541746972996-4e0b0f93e586?w=500&h=500&fit=crop", // pen
+  ],
+  "Default": [
+    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1572635196243-4dd75fbdbd7f?w=500&h=500&fit=crop",
+    "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop",
+  ]
+};
 
 export const generateProducts = (count: number = 10000) => {
   const products = [];
@@ -66,7 +95,10 @@ export const generateProducts = (count: number = 10000) => {
     const adjective = productAdjectives[Math.floor(Math.random() * productAdjectives.length)];
     const productName = productNames[Math.floor(Math.random() * productNames.length)];
     const brand = brands[Math.floor(Math.random() * brands.length)];
-    const image = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+    
+    // Get category-specific images or fallback to default
+    const categoryImageSet = categoryImages[category] || categoryImages["Default"];
+    const image = categoryImageSet[Math.floor(Math.random() * categoryImageSet.length)];
     
     // Generate realistic price ranges based on category
     let basePrice = 10;
@@ -97,6 +129,17 @@ export const generateProducts = (count: number = 10000) => {
     // 95% chance of being in stock
     const inStock = Math.random() > 0.05;
     
+    // Generate more realistic product names
+    const productNameVariations = [
+      `${brand} ${adjective} ${productName}`,
+      `${adjective} ${productName} by ${brand}`,
+      `${brand} ${productName} ${adjective}`,
+      `${productName} - ${adjective} ${brand}`,
+      `${brand} ${productName}`
+    ];
+    
+    const finalName = productNameVariations[Math.floor(Math.random() * productNameVariations.length)];
+    
     // Generate description
     const descriptions = [
       `High-quality ${productName.toLowerCase()} designed for everyday use with premium materials and excellent durability.`,
@@ -110,7 +153,7 @@ export const generateProducts = (count: number = 10000) => {
     
     products.push({
       id: i,
-      name: `${brand} ${adjective} ${productName}`,
+      name: finalName,
       price,
       originalPrice,
       image,
